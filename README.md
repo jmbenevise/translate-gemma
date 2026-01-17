@@ -31,7 +31,7 @@ A self-hosted web translation interface powered by Google's [TranslateGemma](htt
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/translate-gemma-web.git
+git clone https://github.com/Harrison-Dev/translate-gemma-web.git
 cd translate-gemma-web
 ```
 

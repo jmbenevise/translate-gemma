@@ -31,7 +31,7 @@
 ### 1. Clone 專案
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/translate-gemma-web.git
+git clone https://github.com/Harrison-Dev/translate-gemma-web.git
 cd translate-gemma-web
 ```
 
