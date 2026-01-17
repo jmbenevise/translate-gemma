@@ -1,77 +1,177 @@
 # TranslateGemma Web
 
-A self-hosted web translation interface powered by Google's TranslateGemma model running locally via Ollama. Google Translate-style UI with privacy in mind.
-
-[English](#english) | [繁體中文](#繁體中文)
-
----
-
-## English
+A self-hosted web translation interface powered by Google's [TranslateGemma](https://ai.google.dev/gemma/docs/core/translategemma) model running locally via Ollama. Features a Google Translate-style UI with full privacy—no data leaves your machine.
 
 ![TranslateGemma](https://img.shields.io/badge/Model-TranslateGemma-blue)
 ![Languages](https://img.shields.io/badge/Languages-55+-green)
 ![Docker](https://img.shields.io/badge/Docker-Compose-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-### ✨ Features
+[English](#features) | [繁體中文](README_zh-TW.md)
 
-- 🌍 **55+ Languages** - Chinese, English, Japanese, Korean, Spanish, and many more
+## Features
+
+- 🌍 **55+ Languages** - Supports Chinese, English, Japanese, Korean, Spanish, French, German, and many more
 - 🎨 **Modern UI** - Dark mode, glassmorphism design, smooth animations
 - 🔄 **Swap Languages** - One-click language swap
 - 📋 **Copy to Clipboard** - Quick copy translation results
-- 🔒 **Privacy First** - Runs locally with Ollama, no data sent to external servers
-- 🔌 **Immersive Translate Compatible** - Use as custom translation API for browser extensions
+- 🔒 **Privacy First** - Runs entirely locally with Ollama, no data sent to external servers
+- 🔌 **[Immersive Translate](https://immersivetranslate.com/) Compatible** - Use as a custom translation API for browser extensions
+- 🤖 **Multiple Models** - Choose between TranslateGemma 4B (faster) and 12B (higher quality)
 
-### 📋 Requirements
+## Requirements
 
 - Docker and Docker Compose
 - NVIDIA GPU (recommended for faster inference)
 - 8GB+ RAM
-- ~4GB disk space for the model
+- ~4GB disk space for the model (4B) or ~9GB (12B)
 
-### 🚀 Quick Start
+## Quick Start
 
-#### 1. Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/translate-gemma-web.git
 cd translate-gemma-web
 ```
 
-#### 2. Start the services
+### 2. Start the services
 
 ```bash
 docker compose up -d
 ```
 
-#### 3. Wait for model download
+### 3. Wait for model download
 
-First run will automatically download TranslateGemma 4B (~3.3GB).
-Check progress:
+First run will automatically download TranslateGemma 4B (~3.3GB). Check progress:
 
 ```bash
 docker compose logs -f model-init
 ```
 
-#### 4. Open the web interface
+### 4. Open the web interface
 
 Navigate to [http://localhost:8080](http://localhost:8080)
 
-### 🖥️ Usage
+## Usage
 
-1. Select source and target languages
+### Web Interface
+
+1. Select source and target languages from the dropdowns
 2. Enter text in the left panel
-3. Click "Translate" or press `Ctrl + Enter`
+3. Click **"Translate"** or press `Ctrl + Enter`
 4. Results appear in the right panel
-5. Click copy button to copy results
+5. Click the copy button to copy results to clipboard
 
-### ⌨️ Keyboard Shortcuts
+### Switch Models
+
+Click the model selector in the header to switch between:
+- **TranslateGemma 4B** - Faster, good for everyday translation
+- **TranslateGemma 12B** - Higher quality, more accurate translations
+
+To use the 12B model, manually pull it first:
+
+```bash
+docker exec -it ollama-translate ollama pull translategemma:12b
+```
+
+### Keyboard Shortcuts
 
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl + Enter` | Translate |
 
-### 🏗️ Architecture
+## Immersive Translate Integration
+
+This project provides a custom API endpoint compatible with the [Immersive Translate](https://immersivetranslate.com/) browser extension, allowing you to use TranslateGemma for translating web pages.
+
+### Setup Guide
+
+1. **Enable Developer Mode**
+   - Open Immersive Translate extension → **Settings** → **Developer Settings**
+   - Enable **Beta Testing Features**
+
+2. **Select Custom API**
+   - Go back to **General** settings
+   - Set Translation Service to **Custom API**
+
+3. **Configure API URL**
+   
+   Use the following URL format:
+   ```
+   http://localhost:8080/api/immersive-translate?model=translategemma:4b
+   ```
+   
+   Or for the 12B model:
+   ```
+   http://localhost:8080/api/immersive-translate?model=translategemma:12b
+   ```
+
+4. **Test the Connection**
+   
+   Visit [http://localhost:8080/immersive-config.html](http://localhost:8080/immersive-config.html) to test your setup.
+
+> **Note**: If connecting from other devices on your network, replace `localhost` with your computer's IP address.
+
+## API Reference
+
+### Translation Endpoint
+
+```http
+POST /api/translate
+Content-Type: application/json
+
+{
+  "text": "Hello, world!",
+  "source_lang": "en",
+  "target_lang": "zh-Hant",
+  "model": "translategemma:4b"
+}
+```
+
+Response:
+```json
+{
+  "translated_text": "你好，世界！"
+}
+```
+
+### Immersive Translate Endpoint
+
+```http
+POST /api/immersive-translate?model=translategemma:4b
+Content-Type: application/json
+
+{
+  "source_lang": "en",
+  "target_lang": "zh-TW",
+  "text_list": ["Hello", "World"]
+}
+```
+
+Response:
+```json
+{
+  "translations": [
+    {"detected_source_lang": "en", "text": "你好"},
+    {"detected_source_lang": "en", "text": "世界"}
+  ]
+}
+```
+
+### Get Supported Languages
+
+```http
+GET /api/languages
+```
+
+### Get Available Models
+
+```http
+GET /api/models
+```
+
+## Architecture
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -80,48 +180,69 @@ Navigate to [http://localhost:8080](http://localhost:8080)
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
-### 📁 Project Structure
+## Project Structure
 
 ```
 translate-gemma-web/
-├── docker-compose.yml     # Docker orchestration
-├── Dockerfile             # Web app container
-├── LICENSE                # MIT License
-├── README.md              # Documentation
+├── docker-compose.yml          # Docker orchestration
+├── Dockerfile                  # Web app container
+├── LICENSE                     # MIT License
+├── README.md                   # Documentation (English)
+├── README_zh-TW.md             # Documentation (繁體中文)
 └── app/
-    ├── main.py            # FastAPI backend
-    ├── requirements.txt   # Python dependencies
+    ├── main.py                 # FastAPI backend
+    ├── requirements.txt        # Python dependencies
     └── static/
-        ├── index.html     # Main translation UI
-        ├── immersive-config.html  # Immersive Translate config
-        ├── styles.css     # Styles
-        └── script.js      # Frontend logic
+        ├── index.html          # Main translation UI
+        ├── immersive-config.html  # Immersive Translate setup guide
+        ├── styles.css          # Styles
+        └── script.js           # Frontend logic
 ```
 
-### ❓ FAQ
+## FAQ
 
-**Q: Model download failed?**
+### Model download failed?
 
 Manually pull the model:
+
 ```bash
 docker exec -it ollama-translate ollama pull translategemma:4b
 ```
 
-**Q: Can I use without NVIDIA GPU?**
+### Can I use without NVIDIA GPU?
 
-Yes, but slower. Remove the `deploy` section in `docker-compose.yml`.
+Yes, but translations will be slower. Edit `docker-compose.yml` and remove the `deploy` section under the `ollama` service.
 
-**Q: How to stop services?**
+### How to stop services?
+
 ```bash
 docker compose down
 ```
 
-**Q: How to completely remove (including model)?**
+### How to completely remove (including model data)?
+
 ```bash
 docker compose down -v
 ```
 
-### 🤝 Contributing
+### How to update to the latest version?
+
+```bash
+git pull
+docker compose down
+docker compose up -d --build
+```
+
+## About TranslateGemma
+
+[TranslateGemma](https://ai.google.dev/gemma/docs/core/translategemma) is a specialized translation model developed by Google, designed to provide high-quality translations across 55+ languages. It comes in two sizes:
+
+- **4B** - 3.3GB, faster inference, suitable for everyday use
+- **12B** - 8.1GB, higher quality, better for professional translations
+
+Learn more at the [official documentation](https://ai.google.dev/gemma/docs/core/translategemma).
+
+## Contributing
 
 Contributions are welcome! Feel free to:
 
@@ -131,103 +252,8 @@ Contributions are welcome! Feel free to:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-> **Note**: The TranslateGemma model is subject to Google's licensing terms.
-
----
-
-## 繁體中文
-
-### ✨ 功能特色
-
-- 🌍 **55+ 種語言** - 支援中文、英文、日文、韓文、西班牙文等多種語言
-- 🎨 **現代化介面** - 深色模式、玻璃擬態設計、流暢動畫
-- 🔄 **語言互換** - 一鍵交換來源語言和目標語言
-- 📋 **複製功能** - 快速複製翻譯結果
-- 🔒 **隱私優先** - 使用 Ollama 本地運行，資料不會傳送到外部伺服器
-- 🔌 **支援沉浸式翻譯** - 可作為瀏覽器擴充功能的自訂翻譯 API
-
-### 📋 系統需求
-
-- Docker 和 Docker Compose
-- NVIDIA GPU（建議，用於加速推理）
-- 至少 8GB RAM
-- 約 4GB 磁碟空間（用於模型）
-
-### 🚀 快速開始
-
-#### 1. Clone 專案
-
-```bash
-git clone https://github.com/YOUR_USERNAME/translate-gemma-web.git
-cd translate-gemma-web
-```
-
-#### 2. 啟動服務
-
-```bash
-docker compose up -d
-```
-
-#### 3. 等待模型下載
-
-首次啟動時，會自動下載 TranslateGemma 4B 模型（~3.3GB）。
-查看下載進度：
-
-```bash
-docker compose logs -f model-init
-```
-
-#### 4. 開啟網頁
-
-瀏覽器開啟 [http://localhost:8080](http://localhost:8080)
-
-### 🖥️ 使用方式
-
-1. 選擇來源語言和目標語言
-2. 在左側輸入要翻譯的文字
-3. 點擊「翻譯」按鈕或按 `Ctrl + Enter`
-4. 翻譯結果會顯示在右側
-5. 點擊複製按鈕將結果複製到剪貼簿
-
-### ❓ 常見問題
-
-**Q: 模型下載失敗怎麼辦？**
-
-手動下載模型：
-```bash
-docker exec -it ollama-translate ollama pull translategemma:4b
-```
-
-**Q: 沒有 NVIDIA GPU 可以使用嗎？**
-
-可以，但速度會較慢。編輯 `docker-compose.yml`，移除 `deploy` 區塊中的 GPU 配置。
-
-**Q: 如何停止服務？**
-```bash
-docker compose down
-```
-
-**Q: 如何完全清除（包含模型）？**
-```bash
-docker compose down -v
-```
-
-### 🤝 貢獻
-
-歡迎貢獻！請：
-
-1. Fork 此專案
-2. 建立功能分支（`git checkout -b feature/amazing-feature`）
-3. 提交變更（`git commit -m 'Add amazing feature'`）
-4. 推送到分支（`git push origin feature/amazing-feature`）
-5. 開啟 Pull Request
-
-### 📄 授權
-
-本專案採用 MIT 授權條款 - 詳見 [LICENSE](LICENSE) 檔案。
-
-> **注意**：TranslateGemma 模型受 Google 授權條款約束。
+> **Note**: The TranslateGemma model is subject to [Google's Gemma Terms of Use](https://ai.google.dev/gemma/terms).
