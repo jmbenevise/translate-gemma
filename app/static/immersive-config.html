@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沉浸式翻譯 設定指南</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --accent: #667eea;
+            --accent-secondary: #764ba2;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --success: #10b981;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .url-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .url-box code {
+            flex: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--accent);
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        .test-section {
+            margin-top: 1.5rem;
+        }
+
+        .test-btn {
+            background: transparent;
+            border: 2px solid var(--accent);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .test-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .test-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .test-result.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .test-result.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .model-select {
+            margin-top: 1rem;
+        }
+
+        .model-select label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .model-select select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .note {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        .note p {
+            margin-bottom: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← 返回翻譯頁面</a>
+
+        <header>
+            <h1>🌐 沉浸式翻譯 設定</h1>
+            <p class="subtitle">將 TranslateGemma 連接到沉浸式翻譯 Chrome 擴展</p>
+        </header>
+
+        <div class="card">
+            <h2><span class="step-number">1</span> 開啟開發者模式</h2>
+            <p>打開沉浸式翻譯擴展 → <strong>選項</strong> → <strong>開發者設定</strong> → 啟用 <strong>Beta 測試特性</strong></p>
+        </div>
+
+        <div class="card">
+            <h2><span class="step-number">2</span> 選擇自定義 API</h2>
+            <p>返回 <strong>常規</strong> 設定 → 翻譯服務選擇 <strong>自定義 API</strong></p>
+        </div>
+
+        <div class="card">
+            <h2><span class="step-number">3</span> 設定 API URL</h2>
+            <p>複製以下 URL 並貼入沉浸式翻譯的自定義 API 設定中：</p>
+
+            <div class="model-select">
+                <label for="model">選擇翻譯模型：</label>
+                <select id="model">
+                    <option value="translategemma:4b">TranslateGemma 4B (快速)</option>
+                    <option value="translategemma:12b">TranslateGemma 12B (高品質)</option>
+                </select>
+            </div>
+
+            <div class="url-box">
+                <code id="apiUrl"></code>
+                <button class="copy-btn" onclick="copyUrl()">複製</button>
+            </div>
+
+            <div class="note">
+                <p>💡 如果你想從其他設備連接，請將 <code>localhost</code> 替換為你的電腦 IP 地址</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="step-number">4</span> 測試連線</h2>
+            <p>點擊下方按鈕確認 API 正常運作：</p>
+
+            <div class="test-section">
+                <button class="test-btn" onclick="testConnection()">測試連線</button>
+                <div id="testResult" class="test-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modelSelect = document.getElementById('model');
+        const apiUrlElement = document.getElementById('apiUrl');
+
+        function updateUrl() {
+            const model = modelSelect.value;
+            const baseUrl = `${window.location.protocol}//${window.location.host}`;
+            apiUrlElement.textContent = `${baseUrl}/api/immersive-translate?model=${model}`;
+        }
+
+        modelSelect.addEventListener('change', updateUrl);
+        updateUrl();
+
+        function copyUrl() {
+            const url = apiUrlElement.textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '已複製!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '複製';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        async function testConnection() {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.className = 'test-result';
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = '測試中...';
+
+            try {
+                const response = await fetch('/api/immersive-translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_lang: 'en',
+                        target_lang: 'zh-TW',
+                        text_list: ['Hello']
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.translations && data.translations.length > 0) {
+                        resultDiv.className = 'test-result success';
+                        resultDiv.textContent = `✓ 連線成功！測試翻譯: "Hello" → "${data.translations[0].text}"`;
+                    } else {
+                        throw new Error('Invalid response format');
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.className = 'test-result error';
+                resultDiv.textContent = `✗ 連線失敗: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TranslateGemma - AI-powered translation supporting 55+ languages">
+    <title>TranslateGemma 翻譯</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+                        fill="currentColor" />
+                </svg>
+                <h1>TranslateGemma</h1>
+            </div>
+            <p class="tagline">AI 驅動的多語言翻譯 · 支援 55+ 種語言</p>
+            <div class="model-selector-wrapper">
+                <label for="model-select" class="model-label">模型:</label>
+                <select id="model-select" class="model-select">
+                    <!-- Populated by JavaScript -->
+                </select>
+            </div>
+        </header>
+
+        <main class="translator">
+            <div class="language-bar">
+                <div class="language-selector">
+                    <select id="source-lang" class="lang-select">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+
+                <button id="swap-btn" class="swap-button" title="交換語言">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"
+                            fill="currentColor" />
+                    </svg>
+                </button>
+
+                <div class="language-selector">
+                    <select id="target-lang" class="lang-select">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="translation-panels">
+                <div class="panel source-panel">
+                    <div class="panel-header">
+                        <span class="panel-label">原文</span>
+                        <button id="clear-btn" class="icon-button" title="清除">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                                    fill="currentColor" />
+                            </svg>
+                        </button>
+                    </div>
+                    <textarea id="source-text" class="text-area" placeholder="輸入要翻譯的文字..."
+                        spellcheck="false"></textarea>
+                    <div class="panel-footer">
+                        <span id="char-count" class="char-count">0 / 5000</span>
+                    </div>
+                </div>
+
+                <div class="panel target-panel">
+                    <div class="panel-header">
+                        <span class="panel-label">譯文</span>
+                        <button id="copy-btn" class="icon-button" title="複製">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+                                    fill="currentColor" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="target-text" class="text-area target-text">
+                        <span class="placeholder-text">翻譯結果將顯示在這裡...</span>
+                    </div>
+                    <div class="loading-indicator" id="loading">
+                        <div class="spinner"></div>
+                        <span>翻譯中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="translate-btn" class="translate-button">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+                        fill="currentColor" />
+                </svg>
+                翻譯
+            </button>
+        </main>
+
+        <footer class="footer">
+            <p>Powered by <strong id="model-name-footer">TranslateGemma 4B</strong> · Built with Ollama</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast">已複製到剪貼簿</div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
