@@ -91,6 +91,7 @@ class TranslateResponse(BaseModel):
 AVAILABLE_MODELS = [
     {"id": "translategemma:4b", "name": "TranslateGemma 4B", "size": "3.3 GB", "description": "快速 · 適合日常翻譯"},
     {"id": "translategemma:12b", "name": "TranslateGemma 12B", "size": "8.1 GB", "description": "高品質 · 更準確的翻譯"},
+    {"id": "rinex20/translategemma3:12b", "name": "TranslateGemma 12B", "size": "8.1 GB", "description": "TranslateGemma"},
 ]
 
 # Immersive Translate API Models
@@ -302,7 +303,7 @@ async def openai_chat_completions(request: OpenAIChatRequest):
     # Extract the text to translate from messages
     text_to_translate = ""
     source_lang = "en"
-    target_lang = "zh-Hant"
+    target_lang = "th"
     
     for msg in request.messages:
         if msg.role == "system":
@@ -330,7 +331,7 @@ async def openai_chat_completions(request: OpenAIChatRequest):
     
     # Map model names
     model = request.model
-    if model not in ["translategemma:4b", "translategemma:12b"]:
+    if model not in ["translategemma:4b", "translategemma:12b", "rinex20/translategemma3:12b"]:
         model = "translategemma:4b"  # Default to 4b
     
     source_name = get_language_name(source_lang)
