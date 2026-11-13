@@ -2,6 +2,8 @@
 
 A self-hosted web translation interface powered by Google's [TranslateGemma](https://ai.google.dev/gemma/docs/core/translategemma) model running locally via Ollama. Features a Google Translate-style UI with full privacy—no data leaves your machine.
 
+This an English translation.
+
 ![TranslateGemma](https://img.shields.io/badge/Model-TranslateGemma-blue)
 ![Languages](https://img.shields.io/badge/Languages-55+-green)
 ![Docker](https://img.shields.io/badge/Docker-Compose-blue)
