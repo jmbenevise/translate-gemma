@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>沉浸式翻譯 設定指南</title>
+    <title>Immersive Translation Setup</title>
     <style>
         :root {
             --bg-primary: #0f0f23;
@@ -222,51 +222,50 @@
 
 <body>
     <div class="container">
-        <a href="/" class="back-link">← 返回翻譯頁面</a>
+        <a href="/" class="back-link">← Return to Translation Page</a>
 
         <header>
-            <h1>🌐 沉浸式翻譯 設定</h1>
-            <p class="subtitle">將 TranslateGemma 連接到沉浸式翻譯 Chrome 擴展</p>
+            <h1>🌐 Immersive Translation Setup</h1>
+            <p class="subtitle">Connect TranslateGemma to the Immersive Translation Chrome Extension</p>
         </header>
 
         <div class="card">
-            <h2><span class="step-number">1</span> 開啟開發者模式</h2>
-            <p>打開沉浸式翻譯擴展 → <strong>選項</strong> → <strong>開發者設定</strong> → 啟用 <strong>Beta 測試特性</strong></p>
+            <h2><span class="step-number">1</span> Enable Developer Mode</h2>
+            <p>Open Immersive Translation extension → <strong>Options</strong> → <strong>Developer settings</strong> → Enable <strong>Beta test features</strong></p>
         </div>
 
         <div class="card">
-            <h2><span class="step-number">2</span> 選擇自定義 API</h2>
-            <p>返回 <strong>常規</strong> 設定 → 翻譯服務選擇 <strong>自定義 API</strong></p>
+            <h2><span class="step-number">2</span> Select Custom API</h2>
+            <p>Return to <strong>Regular</strong> settings → Translation service select <strong>Custom API</strong></p>
         </div>
 
         <div class="card">
-            <h2><span class="step-number">3</span> 設定 API URL</h2>
-            <p>複製以下 URL 並貼入沉浸式翻譯的自定義 API 設定中：</p>
+            <h2><span class="step-number">3</span> Set API URL</h2>
+            <p>Copy the following URL and paste it into the Immersive Translation custom API setting:</p>
 
             <div class="model-select">
-                <label for="model">選擇翻譯模型：</label>
+                <label for="model">Select translation model:</label>
                 <select id="model">
-                    <option value="translategemma:4b">TranslateGemma 4B (快速)</option>
-                    <option value="translategemma:12b">TranslateGemma 12B (高品質)</option>
+                    <option value="rinex20/translategemma3:12b">TranslateGemma 12B</option>
                 </select>
             </div>
 
             <div class="url-box">
                 <code id="apiUrl"></code>
-                <button class="copy-btn" onclick="copyUrl()">複製</button>
+                <button class="copy-btn" onclick="copyUrl()">Copy</button>
             </div>
 
             <div class="note">
-                <p>💡 如果你想從其他設備連接，請將 <code>localhost</code> 替換為你的電腦 IP 地址</p>
+                <p>💡 If you want to connect from another device, replace <code>localhost</code> with the IP address of your computer</p>
             </div>
         </div>
 
         <div class="card">
-            <h2><span class="step-number">4</span> 測試連線</h2>
-            <p>點擊下方按鈕確認 API 正常運作：</p>
+            <h2><span class="step-number">4</span> Test Connection</h2>
+            <p>Click the button below to confirm that the API is working correctly:</p>
 
             <div class="test-section">
-                <button class="test-btn" onclick="testConnection()">測試連線</button>
+                <button class="test-btn" onclick="testConnection()">Test Connection</button>
                 <div id="testResult" class="test-result"></div>
             </div>
         </div>
@@ -289,10 +288,10 @@
             const url = apiUrlElement.textContent;
             navigator.clipboard.writeText(url).then(() => {
                 const btn = document.querySelector('.copy-btn');
-                btn.textContent = '已複製!';
+                btn.textContent = 'Copied!';
                 btn.classList.add('copied');
                 setTimeout(() => {
-                    btn.textContent = '複製';
+                    btn.textContent = 'Copy';
                     btn.classList.remove('copied');
                 }, 2000);
             });
@@ -302,7 +301,7 @@
             const resultDiv = document.getElementById('testResult');
             resultDiv.className = 'test-result';
             resultDiv.style.display = 'block';
-            resultDiv.textContent = '測試中...';
+            resultDiv.textContent = 'Testing...';
 
             try {
                 const response = await fetch('/api/immersive-translate', {
@@ -310,7 +309,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         source_lang: 'en',
-                        target_lang: 'zh-TW',
+                        target_lang: 'th',
                         text_list: ['Hello']
                     })
                 });
@@ -319,7 +318,7 @@
                     const data = await response.json();
                     if (data.translations && data.translations.length > 0) {
                         resultDiv.className = 'test-result success';
-                        resultDiv.textContent = `✓ 連線成功！測試翻譯: "Hello" → "${data.translations[0].text}"`;
+                        resultDiv.textContent = `✓ Connection successful! Test translation: "Hello" → "${data.translations[0].text}"`;
                     } else {
                         throw new Error('Invalid response format');
                     }
@@ -328,7 +327,7 @@
                 }
             } catch (error) {
                 resultDiv.className = 'test-result error';
-                resultDiv.textContent = `✗ 連線失敗: ${error.message}`;
+                resultDiv.textContent = `✗ Connection failed: ${error.message}`;
             }
         }
     </script>

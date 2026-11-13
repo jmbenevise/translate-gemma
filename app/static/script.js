@@ -13,7 +13,7 @@ const charCount = document.getElementById('char-count');
 const loadingIndicator = document.getElementById('loading');
 const toast = document.getElementById('toast');
 
-const MAX_CHARS = 5000;
+const MAX_CHARS = 50000;
 let isTranslating = false;
 let debounceTimer = null;
 let currentModels = [];
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Set default languages
     sourceLangSelect.value = 'en';
-    targetLangSelect.value = 'zh-Hant';
+    targetLangSelect.value = 'th';
 });
 
 // ===== Load Languages =====
@@ -49,7 +49,7 @@ async function loadLanguages() {
         });
     } catch (error) {
         console.error('Failed to load languages:', error);
-        showToast('無法載入語言列表');
+        showToast('Failed to load language list');
     }
 }
 
@@ -67,7 +67,7 @@ async function loadModels() {
             if (model.installed) {
                 option.textContent = `${model.name} (${model.size}) - ${model.description}`;
             } else {
-                option.textContent = `${model.name} (${model.size}) - 未安裝`;
+                option.textContent = `${model.name} (${model.size}) - Not installed`;
                 option.disabled = true;
             }
             modelSelect.appendChild(option);
@@ -130,7 +130,7 @@ function setupEventListeners() {
         const selectedModel = currentModels.find(m => m.id === modelSelect.value);
         if (selectedModel) {
             updateFooterModelName(selectedModel.name);
-            showToast(`已切換至 ${selectedModel.name}`);
+            showToast(`Switched to ${selectedModel.name}`);
         }
     });
 }
@@ -140,7 +140,7 @@ async function translate() {
     const text = sourceTextArea.value.trim();
 
     if (!text) {
-        targetTextDiv.innerHTML = '<span class="placeholder-text">翻譯結果將顯示在這裡...</span>';
+        targetTextDiv.innerHTML = '<span class="placeholder-text">Translation will appear here...</span>';
         return;
     }
 
@@ -167,7 +167,7 @@ async function translate() {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || '翻譯失敗');
+            throw new Error(errorData.detail || 'Translation failed');
         }
 
         const data = await response.json();
@@ -175,8 +175,8 @@ async function translate() {
 
     } catch (error) {
         console.error('Translation error:', error);
-        targetTextDiv.innerHTML = `<span style="color: #ef4444;">錯誤: ${error.message}</span>`;
-        showToast('翻譯失敗，請稍後再試');
+        targetTextDiv.innerHTML = `<span style="color: #ef4444;">Error: ${error.message}</span>`;
+        showToast('Translation failed, please try again');
     } finally {
         isTranslating = false;
         translateBtn.disabled = false;
@@ -205,7 +205,7 @@ function swapLanguages() {
     const translatedText = targetTextDiv.textContent;
     if (translatedText && !targetTextDiv.querySelector('.placeholder-text')) {
         sourceTextArea.value = translatedText;
-        targetTextDiv.innerHTML = '<span class="placeholder-text">翻譯結果將顯示在這裡...</span>';
+        targetTextDiv.innerHTML = '<span class="placeholder-text">Translation will appear here...</span>';
         updateCharCount();
     }
 }
@@ -213,7 +213,7 @@ function swapLanguages() {
 // ===== Clear Source =====
 function clearSource() {
     sourceTextArea.value = '';
-    targetTextDiv.innerHTML = '<span class="placeholder-text">翻譯結果將顯示在這裡...</span>';
+    targetTextDiv.innerHTML = '<span class="placeholder-text">Translation will appear here...</span>';
     updateCharCount();
     sourceTextArea.focus();
 }
@@ -223,16 +223,16 @@ async function copyTranslation() {
     const text = targetTextDiv.textContent;
 
     if (!text || targetTextDiv.querySelector('.placeholder-text')) {
-        showToast('沒有可複製的內容');
+        showToast('No content to copy');
         return;
     }
 
     try {
         await navigator.clipboard.writeText(text);
-        showToast('已複製到剪貼簿');
+        showToast('Copied to clipboard');
     } catch (error) {
         console.error('Copy failed:', error);
-        showToast('複製失敗');
+        showToast('Copy failed');
     }
 }
 
