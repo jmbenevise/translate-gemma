@@ -91,7 +91,6 @@ class TranslateResponse(BaseModel):
 AVAILABLE_MODELS = [
     {"id": "translategemma:4b", "name": "TranslateGemma 4B", "size": "3.3 GB", "description": "快速 · 適合日常翻譯"},
     {"id": "translategemma:12b", "name": "TranslateGemma 12B", "size": "8.1 GB", "description": "高品質 · 更準確的翻譯"},
-    {"id": "rinex20/translategemma3:12b", "name": "TranslateGemma 12B", "size": "8.1 GB", "description": "TranslateGemma"},
 ]
 
 # Immersive Translate API Models
